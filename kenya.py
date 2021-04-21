@@ -29,20 +29,21 @@ def feature_engineer_num(loan_amt, lend_term, description, loan_use, tags):
     char_count_DT = char_len_count(description)
     char_count_TAGS = char_len_count(tags)
     char_count_LU = char_len_count(loan_use)
+    word_char_DT = word_count_DT*char_count_DT
+    word_char_TAGS = word_count_TAGS*char_count_TAGS
+    word_char_LU = word_count_LU*char_count_LU
 
-    month = 0
-    FEM_COUNT = 0
-    MALE_COUNT = 0
-    PIC_TRUE_COUNT = 0
-    PIC_FALSE_COUNT = 0
-    ANY_FEM = 0
-    ANY_MALE = 0
-    MALE_FEM = 0
-    MALE_PIC = 0
-    FEM_PIC = 0
-    word_char_DT = 0
-    word_char_TAGS = 0
-    word_char_LU = 0
+    month = 3.87
+    FEM_COUNT = 1.42
+    MALE_COUNT = 2.19
+    PIC_TRUE_COUNT = 2.19
+    PIC_FALSE_COUNT = 0.00
+    ANY_FEM = .76
+    ANY_MALE = 0.98
+    MALE_FEM = 9.45
+    MALE_PIC = 16.105
+    FEM_PIC = 9.45
+
 
     X = [loan_amnt, word_count_TAGS, lend_term, word_count_LU, char_count_DT,
         char_count_TAGS, char_count_LU, month, FEM_COUNT, MALE_COUNT,
@@ -85,19 +86,22 @@ if [loan_amount][0] != "":
                     # processing inputs
                     input_num = feature_engineer_num(loan_amt=loan_amount, lend_term=lender_term,
                     description=user_description, loan_use=user_loan_use, tags=user_tags)
-                    # st.write(input_num)
                     input_num = np.array(input_num).reshape(1,-1)
                     predicted_status_num = num_model.predict(input_num)[0]
                     input_text = preprocess_nlp(user_description, user_loan_use, user_tags)
                     predicted_status_nlp = nlp_model.predict(input_text)[0]
 
                     #conditions for whether or not a loan is likely to be funded
-                    if predicted_status_num == .5:
+                    if predicted_status_num >= .5:
                         if predicted_status_nlp == 1:
                             st.write(f'Your loan is likely to be funded!')
                             st.balloons()
+                        else:
+                            st.write(f"Your application has a low chance of being funded.\
+                            For support with your application, we'd like to connect you with one of \
+                            our field partners. Please contact us at xxx.xxx.xxxx")
                     else:
-                        st.write(f"Your application is has a low chance of being funded.\
+                        st.write(f"Your application has a low chance of being funded.\
                         For support with your application, we'd like to connect you with one of \
                         our field partners. Please contact us at xxx.xxx.xxxx")
                 else:
