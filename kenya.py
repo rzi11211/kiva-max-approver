@@ -1,6 +1,7 @@
 import streamlit as st
 import pickle
 import numpy as np
+from PIL import Image
 from nltk.corpus import stopwords
 from nltk.tokenize import RegexpTokenizer
 from nltk.stem import WordNetLemmatizer
@@ -8,7 +9,6 @@ from nltk.stem import WordNetLemmatizer
 # loading models
 num_model = pickle.load(open('./Shashank/pipe.p', 'rb'))
 nlp_model = pickle.load(open('./nlp_model.p', 'rb'))
-
 
 # functionS to process numeric inputs
 def word_len_count(column):
@@ -66,6 +66,14 @@ def preprocess_nlp(description, loan_use, tags):
     input_list.append(joined_text)
     return input_list
 
+#header image
+col1, col2 = st.beta_columns(2)
+
+image1 = Image.open('images/field.jpeg')
+col1.image(image1, use_column_width=True)
+
+image2 = Image.open('images/ginger.jpeg')
+col2.image(image2, use_column_width=True)
 
 # user inputs
 loan_amount = st.text_input("Loan Amount:")
