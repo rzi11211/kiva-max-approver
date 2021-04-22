@@ -87,6 +87,7 @@ if [loan_amount][0] != "":
                     input_num = feature_engineer_num(loan_amt=loan_amount, lend_term=lender_term,
                     description=user_description, loan_use=user_loan_use, tags=user_tags)
                     input_num = np.array(input_num).reshape(1,-1)
+                    
                     predicted_status_num = num_model.predict(input_num)[0]
                     input_text = preprocess_nlp(user_description, user_loan_use, user_tags)
                     predicted_status_nlp = nlp_model.predict(input_text)[0]
