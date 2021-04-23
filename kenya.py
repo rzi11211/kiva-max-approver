@@ -37,7 +37,6 @@ def char_len_count(column):
     char_count = len(char_count[:])
     return char_count
 # creating list of features for X variable, returns X variable for numeric model
-@st.cache(allow_output_mutation=True)
 def feature_engineer_num(loan_amt, lend_term, description, loan_use, tags):
     if "," in loan_amt:
         loan_amnt = int("".join(loan_amt.split(",")))
@@ -69,7 +68,6 @@ def feature_engineer_num(loan_amt, lend_term, description, loan_use, tags):
     return X
 
 # function to preprocess user inputs for nlp model
-@st.cache
 def preprocess_nlp(description, loan_use, tags):
     input_list = []
     processed_tags = tags.replace(' ', '')
