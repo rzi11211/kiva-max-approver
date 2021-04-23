@@ -62,10 +62,10 @@ def feature_engineer_num(loan_amt, lend_term, description, loan_use, tags):
     MALE_PIC = 1
     FEM_PIC = 1
     # defining X variable for numeric model
-    X = [loan_amnt, word_count_TAGS, lend_term, word_count_LU, char_count_DT,
-        char_count_TAGS, char_count_LU, month, FEM_COUNT, MALE_COUNT,
-        PIC_TRUE_COUNT, PIC_FALSE_COUNT, ANY_FEM, ANY_MALE, word_char_DT,
-        word_char_TAGS, word_char_LU, MALE_FEM, MALE_PIC, FEM_PIC]
+    X = [loan_amnt, lend_term, word_count_DT, word_count_TAGS, word_count_LU,
+        char_count_DT, char_count_TAGS, char_count_LU, word_char_DT, word_char_TAGS,
+        word_char_LU, month, FEM_COUNT, MALE_COUNT, PIC_TRUE_COUNT, PIC_FALSE_COUNT,
+        ANY_FEM, ANY_MALE, MALE_FEM, MALE_PIC, FEM_PIC]
     return X
 
 # function to preprocess user inputs for nlp model
@@ -85,7 +85,7 @@ def preprocess_nlp(description, loan_use, tags):
 
 
 # loading models
-num_model = pickle.load(open('./Shashank/pipe.p', 'rb'))
+num_model = pickle.load(open('./models/numeric_model.p', 'rb'))
 nlp_model = pickle.load(open('./models/nlp_model.p', 'rb'))
 
 
