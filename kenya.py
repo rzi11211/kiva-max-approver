@@ -6,20 +6,35 @@ from nltk.corpus import stopwords
 from nltk.tokenize import RegexpTokenizer
 from nltk.stem import WordNetLemmatizer
 
-# loading models
-num_model = pickle.load(open('./Shashank/pipe.p', 'rb'))
-nlp_model = pickle.load(open('./nlp_model.p', 'rb'))
+# header image
+col1, col2 = st.beta_columns(2)
+image1 = Image.open('images/field.jpeg')
+col1.image(image1, use_column_width=True)
+image2 = Image.open('images/ginger.jpeg')
+col2.image(image2, use_column_width=True)
 
-# functionS to process numeric inputs
+
+# user inputs
+loan_amount = st.text_input("Loan Amount (numbers only):")
+lender_term = st.text_input("Number of Months for Repayment:")
+user_description = st.text_input("Description: Tell us who the borrower is and \
+    why they're requesting a loan through Kiva.org:")
+user_loan_use = st.text_input("Loan to be Used For:")
+user_tags = st.text_input("Tags (ex. #myfirsttag, #mysecondtag...)")
+
+
+# functions to process user inputs for numeric model
+# creating features with word count of text inputs
 def word_len_count(column):
     word_count = len(column.split())
     return word_count
-
+# creating features with character count of text inputs
 def char_len_count(column):
     char_count = column.replace(' ','')
     char_count = len(char_count[:])
     return char_count
-
+# creating function to take user inputs and create list of features for X value
+# returns X value for numeric model
 @st.cache
 def feature_engineer_num(loan_amt, lend_term, description, loan_use, tags):
     if "," in loan_amt:
@@ -51,7 +66,7 @@ def feature_engineer_num(loan_amt, lend_term, description, loan_use, tags):
         word_char_TAGS, word_char_LU, MALE_FEM, MALE_PIC, FEM_PIC]
     return X
 
-# function to process text inputs
+# function to preprocess user inputs for nlp model
 @st.cache
 def preprocess_nlp(description, loan_use, tags):
     input_list = []
@@ -66,23 +81,6 @@ def preprocess_nlp(description, loan_use, tags):
     input_list.append(joined_text)
     return input_list
 
-#header image
-col1, col2 = st.beta_columns(2)
-
-image1 = Image.open('images/field.jpeg')
-col1.image(image1, use_column_width=True)
-
-image2 = Image.open('images/ginger.jpeg')
-col2.image(image2, use_column_width=True)
-
-# user inputs
-loan_amount = st.text_input("Loan Amount (numbers only):")
-lender_term = st.text_input("Number of Months for Repayment:")
-user_description = st.text_input("Description: Tell us who the borrower is and \
-    why they're requesting a loan through Kiva.org:")
-user_loan_use = st.text_input("Loan to be Used For:")
-user_tags = st.text_input("Tags (ex. #myfirsttag, #mysecondtag...)")
-
 
 # condition to make sure all required input is received
 if [loan_amount][0] == "" or [lender_term][0] == "" or [user_description][0] == "" or [user_loan_use][0] == "" or [user_tags][0] == "":
@@ -93,11 +91,13 @@ else:
     description=user_description, loan_use=user_loan_use, tags=user_tags)
     input_num = np.array(input_num).reshape(1,-1)
     predicted_status_num = num_model.predict(input_num)[0]
+
     # processing inputs for nlp model
     input_text = preprocess_nlp(user_description, user_loan_use, user_tags)
     predicted_status_nlp = nlp_model.predict(input_text)[0]
 
     #conditions for whether or not a loan is likely to be funded
+    # must be predicted as funded by both models to receive positive result
     if predicted_status_num >= .5 and predicted_status_nlp == 1:
         st.write(f'This loan is likely to be funded! Proceed to next steps.')
         st.balloons()
