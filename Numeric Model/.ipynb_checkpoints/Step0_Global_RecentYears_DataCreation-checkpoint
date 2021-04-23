@@ -1,0 +1,261 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import pandas as pd\n",
+    "import numpy as np\n",
+    "import matplotlib.pyplot as plt\n",
+    "import seaborn as sns\n",
+    "\n",
+    "#modeling\n",
+    "from sklearn.preprocessing import StandardScaler\n",
+    "from sklearn.pipeline import Pipeline\n",
+    "from sklearn.metrics import accuracy_score, precision_score, f1_score, confusion_matrix, ConfusionMatrixDisplay\n",
+    "from sklearn.model_selection import train_test_split, cross_val_score, GridSearchCV\n",
+    "from sklearn.linear_model import LogisticRegression, LinearRegression\n",
+    "from sklearn.neighbors import KNeighborsClassifier\n",
+    "from sklearn.tree import DecisionTreeClassifier\n",
+    "from sklearn.ensemble import BaggingClassifier, RandomForestClassifier, AdaBoostClassifier, ExtraTreesClassifier, GradientBoostingClassifier\n",
+    "from sklearn.svm import SVC"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#college = pd.read_csv('Most-Recent-Cohorts-Field-of-Study.csv')\n",
+    "kiva = pd.read_csv('./Kiva/kiva_ds_csv/loans.csv')"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Variables of interest: \n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 34,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#Append year to carve out recent sample\n",
+    "kiva['year'] = kiva['POSTED_TIME'].str[:4]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 39,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "2018    229633\n",
+       "2017    225476\n",
+       "2019    219005\n",
+       "2016    197236\n",
+       "2015    181835\n",
+       "2014    174232\n",
+       "2013    140035\n",
+       "2012    133847\n",
+       "2011    113009\n",
+       "2020    110418\n",
+       "2010     92902\n",
+       "2009     81629\n",
+       "2008     50697\n",
+       "2007     26314\n",
+       "2006      3200\n",
+       "Name: year, dtype: int64"
+      ]
+     },
+     "execution_count": 39,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "kiva['year'].value_counts()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 57,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#Getting only recent records\n",
+    "kiva_recent = kiva[kiva['year'].isin(['2015', '2016', '2017', '2018','2019'])]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 59,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "2018    229633\n",
+       "2017    225476\n",
+       "2019    219005\n",
+       "2016    197236\n",
+       "2015    181835\n",
+       "Name: year, dtype: int64"
+      ]
+     },
+     "execution_count": 59,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "kiva_recent['year'].value_counts()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 60,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "funded      980589\n",
+       "expired      69156\n",
+       "refunded      3440\n",
+       "Name: STATUS, dtype: int64"
+      ]
+     },
+     "execution_count": 60,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "kiva_recent['STATUS'].value_counts()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 61,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#Getting 350k rows from funded dataset\n",
+    "kivafunded=kiva_recent[kiva_recent['STATUS']=='funded']\n",
+    "kivaf_sample = kivafunded.sample(n=350_000)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 62,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#Getting all expired\n",
+    "kiva_e = kiva_recent[kiva_recent['STATUS']=='expired']"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 63,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#Merging and shuffling funded and expired\n",
+    "kivamix = pd.concat([kivaf_sample, kiva_e])\n",
+    "from sklearn.utils import shuffle\n",
+    "kivamix = shuffle(kivamix)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 64,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "funded     350000\n",
+       "expired     69156\n",
+       "Name: STATUS, dtype: int64"
+      ]
+     },
+     "execution_count": 64,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "#Reviewing mix of funded accounts at Kiva\n",
+    "kivamix['STATUS'].value_counts()\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 65,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#Converting to boolean for status\n",
+    "kivamix['STATUS']=kivamix['STATUS'].map({'funded':1, 'expired':0})"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 28,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from sklearn.utils import shuffle\n",
+    "kivamix = shuffle(kivamix)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 29,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "kivamix.to_csv('kivamix.csv', index=False)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.8.5"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 4
+}
