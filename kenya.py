@@ -3,6 +3,8 @@ import streamlit as st
 import pickle
 import numpy as np
 from PIL import Image
+import nltk
+nltk.download('wordnet')
 from nltk.corpus import stopwords
 from nltk.tokenize import RegexpTokenizer
 from nltk.stem import WordNetLemmatizer
