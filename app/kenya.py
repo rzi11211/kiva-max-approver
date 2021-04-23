@@ -1,3 +1,4 @@
+# import libraries
 import streamlit as st
 import pickle
 import numpy as np
@@ -6,21 +7,23 @@ from nltk.corpus import stopwords
 from nltk.tokenize import RegexpTokenizer
 from nltk.stem import WordNetLemmatizer
 
+#header
+st.title('Loan Predictor for use with Kiva.org')
+
 # header image
 col1, col2 = st.beta_columns(2)
-image1 = Image.open('images/field.jpeg')
+image1 = Image.open('../images/field.jpeg')
 col1.image(image1, use_column_width=True)
-image2 = Image.open('images/ginger.jpeg')
+image2 = Image.open('../images/ginger.jpeg')
 col2.image(image2, use_column_width=True)
 
-
 # user inputs
-loan_amount = st.text_input("Loan Amount (numbers only):")
-lender_term = st.text_input("Number of Months for Repayment:")
-user_description = st.text_input("Description: Tell us who the borrower is and \
-    why they're requesting a loan through Kiva.org:")
-user_loan_use = st.text_input("Loan to be Used For:")
-user_tags = st.text_input("Tags (ex. #myfirsttag, #mysecondtag...)")
+loan_amount = st.text_input("Enter Loan Amount:*  (numbers only)")
+lender_term = st.text_input("Enter Number of Months for Repayment:*")
+user_description = st.text_input("Enter Description:*  (Tell us who the borrower is and \
+    why they're requesting a loan through Kiva.org)")
+user_loan_use = st.text_input("Enter Loan Use:*")
+user_tags = st.text_input("Enter Tags:*  (ex. #myfirsttag, #mysecondtag...)")
 
 
 # functions to process user inputs for numeric model
@@ -33,9 +36,8 @@ def char_len_count(column):
     char_count = column.replace(' ','')
     char_count = len(char_count[:])
     return char_count
-# creating function to take user inputs and create list of features for X value
-# returns X value for numeric model
-@st.cache
+# creating list of features for X variable, returns X variable for numeric model
+@st.cache(allow_output_mutation=True)
 def feature_engineer_num(loan_amt, lend_term, description, loan_use, tags):
     if "," in loan_amt:
         loan_amnt = int("".join(loan_amt.split(",")))
@@ -48,18 +50,18 @@ def feature_engineer_num(loan_amt, lend_term, description, loan_use, tags):
     word_char_DT = word_count_DT*char_count_DT
     word_char_TAGS = word_count_TAGS*char_count_TAGS
     word_char_LU = word_count_LU*char_count_LU
-
+    # default feature values
     month = 3
     FEM_COUNT = 1
     MALE_COUNT = 1
     PIC_TRUE_COUNT = 1
-    PIC_FALSE_COUNT = 0.00
+    PIC_FALSE_COUNT = 0
     ANY_FEM = 1
     ANY_MALE = 1
     MALE_FEM = 1
     MALE_PIC = 1
     FEM_PIC = 1
-
+    # defining X variable for numeric model
     X = [loan_amnt, word_count_TAGS, lend_term, word_count_LU, char_count_DT,
         char_count_TAGS, char_count_LU, month, FEM_COUNT, MALE_COUNT,
         PIC_TRUE_COUNT, PIC_FALSE_COUNT, ANY_FEM, ANY_MALE, word_char_DT,
@@ -82,9 +84,14 @@ def preprocess_nlp(description, loan_use, tags):
     return input_list
 
 
+# loading models
+num_model = pickle.load(open('../Shashank/pipe.p', 'rb'))
+nlp_model = pickle.load(open('./nlp_model.p', 'rb'))
+
+
 # condition to make sure all required input is received
 if [loan_amount][0] == "" or [lender_term][0] == "" or [user_description][0] == "" or [user_loan_use][0] == "" or [user_tags][0] == "":
-    st.write("Please answer all questions.")
+    st.write("*Please answer all questions.")
 else:
     # processing inputs for numeric model
     input_num = feature_engineer_num(loan_amt=loan_amount, lend_term=lender_term,
