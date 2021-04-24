@@ -10,7 +10,7 @@ from nltk.tokenize import RegexpTokenizer
 from nltk.stem import WordNetLemmatizer
 
 #header
-st.title('Loan Predictor for use with Kiva.org')
+st.title('Kiva MaxApprover')
 
 # header image
 col1, col2 = st.beta_columns(2)
