@@ -13,11 +13,11 @@ from nltk.stem import WordNetLemmatizer
 st.title('KivaMaxApprover')
 
 # header image
-col1, col2 = st.beta_columns(2)
-image1 = Image.open('.images/field.jpeg')
-col1.image(image1, use_column_width=True)
-image2 = Image.open('.images/ginger.jpeg')
-col2.image(image2, use_column_width=True)
+# col1, col2 = st.beta_columns(2)
+# image1 = Image.open('.images/field.jpeg')
+# col1.image(image1, use_column_width=True)
+# image2 = Image.open('.images/ginger.jpeg')
+# col2.image(image2, use_column_width=True)
 
 # user inputs
 loan_amount = st.text_input("Enter Loan Amount:* (ex. 10,000)")
