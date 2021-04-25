@@ -52,7 +52,6 @@ def feature_engineer_num(loan_amt, lend_term, description, loan_use, tags):
     word_char_TAGS = word_count_TAGS*char_count_TAGS
     word_char_LU = word_count_LU*char_count_LU
     # default feature values
-    month = 3
     FEM_COUNT = 1
     MALE_COUNT = 1
     PIC_TRUE_COUNT = 1
@@ -65,7 +64,7 @@ def feature_engineer_num(loan_amt, lend_term, description, loan_use, tags):
     # defining X variable for numeric model
     X = [loan_amnt, lend_term, word_count_DT, word_count_TAGS, word_count_LU,
         char_count_DT, char_count_TAGS, char_count_LU, word_char_DT, word_char_TAGS,
-        word_char_LU, month, FEM_COUNT, MALE_COUNT, PIC_TRUE_COUNT, PIC_FALSE_COUNT,
+        word_char_LU, FEM_COUNT, MALE_COUNT, PIC_TRUE_COUNT, PIC_FALSE_COUNT,
         ANY_FEM, ANY_MALE, MALE_FEM, MALE_PIC, FEM_PIC]
     return X
 
