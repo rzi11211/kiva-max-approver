@@ -14,9 +14,9 @@ st.title('KivaMaxApprover')
 
 # header image
 col1, col2 = st.beta_columns(2)
-image1 = Image.open('./images/field.jpeg')
+image1 = Image.open('.images/field.jpeg')
 col1.image(image1, use_column_width=True)
-image2 = Image.open('./images/ginger.jpeg')
+image2 = Image.open('.images/ginger.jpeg')
 col2.image(image2, use_column_width=True)
 
 # user inputs
