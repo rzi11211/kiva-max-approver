@@ -20,7 +20,7 @@ image2 = Image.open('./streamlit_images/ginger.jpeg')
 col2.image(image2, use_column_width=True)
 
 # user inputs
-loan_amount = st.text_input("Enter Loan Amount:* (ex. 10,000)")
+loan_amount = st.text_input("Enter Loan Amount:* (ex. $100, $200)")
 lender_term = st.text_input("Enter Number of Months for Repayment:*")
 user_description = st.text_input("Enter Description:*  (Tell us who the borrower is and \
     why they're requesting a loan through Kiva.org)")
