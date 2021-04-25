@@ -13,11 +13,11 @@ from nltk.stem import WordNetLemmatizer
 st.title('KivaMaxApprover')
 
 # header image
-# col1, col2 = st.beta_columns(2)
-# image1 = Image.open('.images/field.jpeg')
-# col1.image(image1, use_column_width=True)
-# image2 = Image.open('.images/ginger.jpeg')
-# col2.image(image2, use_column_width=True)
+col1, col2 = st.beta_columns(2)
+image1 = Image.open('./images/field.jpeg')
+col1.image(image1, use_column_width=True)
+image2 = Image.open('./images/ginger.jpeg')
+col2.image(image2, use_column_width=True)
 
 # user inputs
 loan_amount = st.text_input("Enter Loan Amount:* (ex. 10,000)")
@@ -84,8 +84,8 @@ def preprocess_nlp(description, loan_use, tags):
 
 
 # loading models
-num_model = pickle.load(open('./models/numeric_model.p', 'rb'))
-nlp_model = pickle.load(open('./models/nlp_model.p', 'rb'))
+num_model = pickle.load(open('./streamlit_models/numeric_model.p', 'rb'))
+nlp_model = pickle.load(open('./streamlit_models/nlp_model.p', 'rb'))
 
 
 # condition to make sure all required input is received
