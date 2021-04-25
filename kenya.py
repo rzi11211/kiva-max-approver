@@ -40,7 +40,7 @@ def char_len_count(column):
     return char_count
 # creating list of features for X variable, returns X variable for numeric model
 def feature_engineer_num(loan_amt, lend_term, description, loan_use, tags):
-    loan_amnt = "".join(loan_amt.split("$""))
+    loan_amnt = "".join(loan_amt.split("$"))
     loan_amnt = int("".join(loan_amnt.split(",")))
     word_count_DT = word_len_count(description)
     word_count_TAGS = word_len_count(tags)
