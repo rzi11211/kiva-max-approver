@@ -66,29 +66,31 @@ https://github.com/psmith19/kiva-max-approver/blob/main/Numeric%20Model/kivasmal
 |LENDER_TERM	|float64	|kivamix	|Time until loan is payed off	|
 |REPAYMENT_INTERVAL	|object	|kivamix	|Loan payment interval	|
 |DISTRIBUTION_MODEL	|object	|kivamix	|Field partner or Direct	|
-|word_count_DT	|int64	|kivamix	|word count in Description translation column	|
-|word_count_TAGS	|int64	|kivamix	|word count in Tags column	|
-|word_count_LU	|int64	|kivamix	|word count in Loan use column	|
-|char_count_DT	|int64	|kivamix	|character count in Description translation column	|
-|char_count_TAGS	|int64	|kivamix	|character count in Tags column	|
-|char_count_LU	|int64	|kivamix	|character count in Loan use column	|
-|month-	|int64	|kivamix	|month number	|
-|FEM_COUNT	|float64	|kivamix	|Number of female applicants	|
-|MALE_COUNT	|float64	|kivamix	|Number of male applicants	|
-|PIC_TRUE_COUNT	|float64	|kivamix	|Count of borrower pictures per loan	|
-|ANY_FEM	|float64	|kivamix	|Female borrowers	|
-|ANY_MALE	|float64	|kivamix	|Male borrowers	|
-|word_char_DT	|int64	|kivamix	|Interaction term between word and character counts for Description translation columns	|
-|word_char_TAGS	|int64	|kivamix	|Interaction term between word and character counts for Tags columns	|
-|word_char_LU	|int64	|kivamix	|Interaction term between word and character counts for Loan use columns	|
-|MALE_FEM	|float64	|kivamix	|Interaction term between Male count and Female count	|
-|MALE_PIC	|float64	|kivamix	|Male picture on application	|
-|FEM_PIC	|float64	|kivamix	|Female picture on application	|
+|DESCRIPTION_TRANSLATED	|	object	|kivamix|Translated description	|
+|LOAN_USE	|	object	|kivamix|purpose of loan	|
+|TAGS	|	object	|kivamix|Hash tags	|
+|word_count_DT	|int64	|kivasmall	|word count in Description translation column	|
+|word_count_TAGS	|int64	|kivasmall	|word count in Tags column	|
+|word_count_LU	|int64	|kivasmall	|word count in Loan use column	|
+|char_count_DT	|int64	|kivasmall	|character count in Description translation column	|
+|char_count_TAGS	|int64	|kivasmall	|character count in Tags column	|
+|char_count_LU	|int64	|kivasmall	|character count in Loan use column	|
+|month	|int64	|kivasmall	|month number	|
+|FEM_COUNT	|float64	|kivasmall	|Number of female applicants	|
+|MALE_COUNT	|float64	|kivasmall	|Number of male applicants	|
+|PIC_TRUE_COUNT	|float64	|kivasmall	|Count of borrower pictures per loan	|
+|ANY_FEM	|float64	|kivasmall	|Female borrowers	|
+|ANY_MALE	|float64	|kivasmall	|Male borrowers	|
+|word_char_DT	|int64	|kivasmall	|Interaction term between word and character counts for Description translation columns	|
+|word_char_TAGS	|int64	|kivasmall	|Interaction term between word and character counts for Tags columns	|
+|word_char_LU	|int64	|kivasmall	|Interaction term between word and character counts for Loan use columns	|
+|MALE_FEM	|float64	|kivasmall	|Interaction term between Male count and Female count	|
+|MALE_PIC	|float64	|kivasmall	|Male picture on application	|
+|FEM_PIC	|float64	|kivasmall	|Female picture on application	|
+|joined_text	|	object	||Joined text columns for NLP model	|
 
 
 ---
-
-## Analysis
 
 ## Numeric Model Build and Analysis
 ### Data Cleaning Steps
@@ -148,7 +150,7 @@ The numeric model was developed by scaling the numeric data given the wide range
     
 ### Modeling, Iteration & Evaluation for NLP Model
 - Dataset included 51,019 observations
-- X-variable: 'joined_text' column, y-variable: 'STATUS' column {'funded' : 1, 'expired': 0}
+- X-variable: 'joined_text', y-variable: 'STATUS', {'funded' : 1, 'expired': 0}
     - Baseline score: .784
 - Vectorized data using Tf-IDF Vectorizer with 2 grams and 10,000 max features
     - Did not remove numbers as they gave greater predictive power
@@ -175,7 +177,7 @@ Another blended model was considered - bringing together the Numeric and NLP mod
 However the combined model seemed to slightly underperform the Numeric model.  It had an accuracy score that was slightly below the accuracy score of the Numeric model with opportunities again for Recall.
 Having said that, there were multiple applications where the NLP model had better accuracy than the Numeric model and this represents an opportunity to further improve the Combination model - by leveraging the best parts of both the models.
 
-## Conclusions & Future Directions  
+## KivaMaxApprover App  
 
 We were able to achieve our goal of helping Kiva Field Partners with their borrower screening process by developing an online tool that quickly evaluates prospective loan applications. Our [KivaMaxApprover app](https://share.streamlit.io/psmith19/kiva-max-approver/main/kma_app.py) is built on a modified prediction algorithm that 
 - returns predictions rapidly
@@ -186,6 +188,7 @@ We were able to achieve our goal of helping Kiva Field Partners with their borro
 
 We believe that this app can improve efficiency for Field Partners by eliminating the need for a skilled worker to carefully review each loan application. Then, if the KivaMaxApprover app indicates that a loan is likely to be funded, an less-experienced staff member can be assigned to finalize and post the request, while more senior resources and support can be directed towards improving applications that are unlikely to be funded in their current state. 
 
+## Conclusions & Future Directions
 The chart below illustrates how our "yes from both" approach performs on testing data. **9,325 of the 12,755 loans would be correctly identified by KivaMaxApprover as likely to be funded**, and so only the remaining 26.89% (3,430) of the loan applications would require an in-depth review by an experienced staffer. 
 
 | Num. Prediction 	| NLP Predictions 	| Actual 	| Count 	|
@@ -211,27 +214,76 @@ Accompanying presentation available [here](https://docs.google.com/presentation/
 ### File Structure
 
 ```
-project_3_master 
-|__ cleaned_data
-|   |__ books_or_writing.csv   
-|   |__ pre_proc_books_or_writing.csv      
-|__ data
-|   |__ comments_pull_complete_1616956764.csv
-|   |__ comments_pull_complete_1616956764.csv
-|   |__ posts_pull_complete_1616953686.csv
-|   |__ posts_pull_complete_1616954678.csv
-|__ provided_files
-|   |__ provided_README.md
-|   |__ Requirements.txt
-|__ python_automation_scripts
-|   |__ automation_script_comments.py
-|   |__ automation_script_posts.py
-|__ 1a_automation_script_posts.ipynb
-|__ 1b_automation_script_comments.ipynb
-|__ 2_cleaning.ipynb
-|__ 3_preprocessing.ipynb
-|__ 4_modeling.ipynb
-|__ 5_selection_insights.ipynb
-|__ presentation_project3_reddit.pdf
+kiva-max-approver 
+|__ early_work
+|   |__ Cleaning
+|      |__cr_cleaning.ipynb
+|      |__rzi_01_kenya_nlp_cleaning.ipynb
+|      |__rzi_02_preprocessing.ipynb
+|      |__rzi_nlp_cleaning.ipynb
+|      |__sr1_kiva_data.ipynb
+|      |__sr2_kiva_smallfile-kenya.ipynb
+|      |__sr2_kiva_smallfile.ipynb
+|   |__ EDA
+|       |__cr_eda_modeling.ipynb
+|       |__cr_eda_viz.ipynb
+|       |__cr_kenya_modeling_eda.ipynb
+|       |__ps_01_fulldata_nlp_clean_eda_logreg.ipynb
+|       |__rzi_early_eda_bag_of_words_modeling.ipynb
+|       |__rzi_sentiment_modeling.ipynb
+|       |__sr3_kiva_eda-kenya.ipynb
+|       |__sr3_kiva_eda.ipynb
+|       |__sr_different_scenarios.xlsx
+|   |__ Modeling
+|       |__ps_02_fulldata_nlp_models_tags.ipynb
+|       |__ps_03_kenya_nlp_models_tags_text.ipynb
+|       |__ps_04_kenya_nlp_eda_logreg_corrected.ipynb
+|       |__ps_05_final_nlp_model_pickle.ipynb
+|       |__ps_final_nlp_model.ipynb
+|       |__rzi_03_kenya_nlp_modeling.ipynb
+|       |__rzi_04_model_selection_insights.ipynb
+|       |__rzi_num_kiva_modeling.ipynb
+|       |__sr3_kiva_kenya_FINAL_numeric_model.ipynb
+|       |__sr3_kiva_kenya_model.ipynb
+|__ images
+|   |__ Char_count_Distr.png
+|   |__ LenderTerm_Distr.png
+|   |__ Loan_Distr.png
+|   |__ Month_Distr.png
+|   |__ Screen Shot 2021-04-25 at 6.28.25 PM.jpeg
+|   |__ app-desktop.jpeg
+|   |__ app-tablet.jpeg
+|   |__ app_desktop_screenshot.png
+|   |__ app_tablet_screenshot.png
+|   |__ combo_clf_report.png
+|   |__ combo_model_results.png
+|   |__ feature_importance.png
+|   |__ field.jpeg
+|   |__ ginger.jpeg
+|   |__ kiva_loan_example.png
+|   |__ nlp_clf_report.png
+|   |__ nlp_positive_coefs.png
+|   |__ num_conf_matrix.png
+|   |__ numeric_confusion_matrix.png
+|   |__ numeric_default_classifiers.png
+|   |__ numerical_clf_report.png
+|   |__ top_occurring.jpg
+|   |__ topwords_alltext.png
+|__ kma_models
+|   |__ nlp_model.p
+|   |__ numeric_model.p
+|__ nlp_model
+|   |__ 01_kenya_nlp_models.ipynb
+|   |__ 02_kenya_nlp_eda_logreg.ipynb
+|   |__ 03_final_nlp_model_pickle.ipynb
+|__ numeric_model
+|   |__ .gitignore
+|   |__ Step1_Global_RecentYears_DataCreation.ipynb
+|   |__ Step2_Kenya_EDA_Cleaning.ipynb
+|   |__ Step3_Model_Build.ipynb
+|   |__ Step4_Model_for_pickle.ipynb
 |__ README.md
-|__ z-scratch_early_eda.ipynb
+|__ kma_app.py
+|__ presentation.pdf
+|__ requirements.txt
+```
