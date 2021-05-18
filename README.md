@@ -205,7 +205,7 @@ We focus on false positives to ensure that all "questionable" applications recei
 
 Further, we'd like to enhance the functionality of our app so that it can automatically generate specific suggestions for loan application improvement, in addition to funding predictions.   
 
-Accompanying presentation available [here](https://docs.google.com/presentation/d/1-TZQEaNkloXdCbY4gXBSgxWtonl4iISbT7ZoZXcAuUc/edit#slide=id.g5402930dac_0_462).
+Accompanying presentation available [here](https://docs.google.com/presentation/d/1bwEJ2HujHI4bjtEo-xwAbaXI2BJ_w3ogmfrW1O9b7M0/edit?usp=sharing).
 
 ---
 
