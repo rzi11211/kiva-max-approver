@@ -1,8 +1,5 @@
-# Project 5 - Social Impact Group Project
 ## KivaMaxApprover App: Supporting Small Business Micro-Loan Field Partners in Kenya
 #### Rachel Insler, Shashank Rajadhyaksha, Carlos Rivera, Precious Smith
-#### *DSIR22221-E Group Project, Presented 4.26.21*
-
 
 ## Executive Summary
 
